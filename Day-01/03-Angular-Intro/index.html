@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular Intro</title>
+    <style>
+        label{
+            display: block;
+        }
+    section{
+        display : block;
+        padding: 10px;
+        margin: 10px;
+        border : 2px solid black;
+        background-color: lightgray;
+    }
+    </style>
+    <script src="angular.js"></script>
+    <script>
+        var myApp = angular.module("myApp",[]);
+        myApp.run(function($rootScope){
+
+
+        });
+        myApp.controller("greetController", function($scope){
+             $scope.greet = function(){
+                $scope.greetMsg = "Hi " + $scope.firstName + " " + $scope.lastName + ", Have a nice day!";
+            }
+        });
+        myApp.controller("calculatorController", function($scope){
+             $scope.calculate = function(){
+                var n1 = parseInt($scope.number1,10),
+                    n2 = parseInt($scope.number2,10),
+                    oper = $scope.operation;
+                $scope.result = 0;
+                 switch  (oper){
+                    case "add":
+                        $scope.result = n1 + n2;
+                        break;
+                    case "subtract":
+                        $scope.result = n1 - n2;
+                        break;
+                    case "multiply":
+                        $scope.result = n1 * n2;
+                        break;
+                    case "divide":
+                        $scope.result = n1 / n2;
+                        break;
+                }
+            }
+        });
+    </script>
+</head>
+<body ng-app="myApp">
+   <section ng-controller="greetController">
+    <input type="text" ng-model="emp.firstName">
+    <input type="text" ng-model="emp.lastName">
+    <input type="button" value="Greet" ng-click="greet()">
+    <div ng-bind="greetMsg"></div>
+   </section>
+    <section ng-controller="calculatorController">
+        <label for="">Number 1:</label>
+        <input type="text" name="" id="txtNumber1" ng-model="number1">
+        <label for="">Number 2:</label>
+        <input type="text" name="" id="txtNumber2" ng-model="number2">
+        <label for="">Operation :</label>
+        <select name="" id="selectOperation" ng-model="operation">
+            <option value="add">add</option>
+            <option value="subtract">subtract</option>
+            <option value="multiply">multiply</option>
+            <option value="divide">divide</option>
+        </select>
+        <div><input type="button" value="Calculate" ng-click="calculate()"></div>
+        <div id="divResult" ng-bind="result"></div>
+    </section>
+</body>
+</html>

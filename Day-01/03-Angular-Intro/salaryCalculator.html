@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Salary Calculator</title>
+    <style>
+        label{
+            display : block;
+        }
+        #divResult{
+            color : red;
+            font-size: 28pt;
+        }
+        .content{
+            border : 2px solid black;
+            background-color: lightgray;
+            padding: 10px;
+        }
+    </style>
+    <script src="angular.js"></script>
+    <script>
+    String.prototype.toInt = function(){
+        return parseInt(this,10);
+    }
+    function SalaryCalculator(){
+        this.basic = "0";
+        this.hra = "0";
+        this.da = "0";
+        this.tax = "0";
+        this.salary = "0";
+    }
+    SalaryCalculator.prototype.calculate = function(){
+        var gross = this.basic.toInt() + this.hra.toInt() + this.da.toInt();
+        var net = gross * ((100-this.tax.toInt())/100);
+        this.salary = net;
+    }
+
+    var myApp = angular.module("myApp",[]);
+        myApp.run(function($rootScope){
+
+            $rootScope.calculator = new SalaryCalculator();
+
+        });
+        myApp.controller("salaryCalculatorController", function($scope){
+
+        });
+
+    </script>
+
+</head>
+<body ng-app="myApp" ng-init="calculator.tax='20'">
+    <h1>Salary Calculator</h1>
+
+    <div class="content" ng-controller="salaryCalculatorController">
+        <div><label for="">Basic :</label>
+        <input type="text" name="" id="txtBasic" ng-model="calculator.basic"></div>
+        <div><label for="">HRA :</label>
+        <input type="text" name="" id="txtHra" ng-model="calculator.hra"></div>
+        <div><label for="">DA :</label>
+        <input type="text" name="" id="txtDa" ng-model="calculator.da"></div>
+        <div>
+            <label for="">Tax %:</label>
+            <input type="range" name="" id="rangeTax" min="0" max="30" ng-model="calculator.tax">
+            <span id="spanTax">{{calculator.tax}}%</span>
+        </div>
+        <div><input type="button" value="Calculate" id="btnCalculate" ng-click="calculator.calculate()"></div>
+        <div>
+            <div id="divResult">{{calculator.salary | currency:'Rs'}}</div>
+        </div>
+    </div>
+</body>
+</html>
