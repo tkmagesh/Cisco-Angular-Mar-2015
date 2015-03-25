@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jQuery Intro</title>
+    <style>
+    label{
+        display: block;
+    }
+        #divResult{
+            font-size: 28pt;
+            font-weight: bold;
+        }
+        .positive{
+            color : green;
+        }
+        .negative{
+            color : red;
+        }
+    </style>
+    <script src="jquery-1.11.2.js"></script>
+    <script>
+        function init(){
+            $("#btnCalculate").click(function(){
+                var n1 = parseInt($("#txtNumber1").val(),10),
+                    n2 = parseInt($("#txtNumber2").val(),10),
+                    oper = $("#selectOperation").val(),
+                    result = 0;
+
+                switch  (oper){
+                    case "add":
+                        result = n1 + n2;
+                        break;
+                    case "subtract":
+                        result = n1 - n2;
+                        break;
+                    case "multiply":
+                        result = n1 * n2;
+                        break;
+                    case "divide":
+                        result = n1 / n2;
+                        break;
+                }
+                $("#divResult").html(result);
+                if (result < 0){
+                    $("#divResult").addClass("negative").removeClass("positive");
+                } else {
+                    $("#divResult").addClass("positive").removeClass("negative");
+                }
+            });
+        }
+        //$(document).ready(init);
+        $(init);
+    </script>
+</head>
+<body>
+    <label for="">Number 1:</label>
+    <input type="text" name="" id="txtNumber1">
+    <label for="">Number 2:</label>
+    <input type="text" name="" id="txtNumber2">
+    <label for="">Operation :</label>
+    <select name="" id="selectOperation">
+        <option value="add">add</option>
+        <option value="subtract">subtract</option>
+        <option value="multiply">multiply</option>
+        <option value="divide">divide</option>
+    </select>
+    <div><input type="button" value="Calculate" id="btnCalculate"></div>
+    <div id="divResult">[Result]</div>
+</body>
+</html>
