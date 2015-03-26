@@ -5,10 +5,14 @@
     <title>Bug Tracker</title>
     <style>
         .closed {
-        color : red;
-        text-decoration: line-through;
-        font-style: italic;
-    }
+            color : red;
+            text-decoration: line-through;
+            font-style: italic;
+        }
+        .dateTime{
+            font-size: small;
+            font-style: italic;
+        }
         h1{
             border-top : 2px solid blue;
             border-bottom : 2px solid blue;
@@ -27,6 +31,7 @@
         }
     </style>
     <script src="angular.js"></script>
+    <script src="moment.js"></script>
 
     <script type="text/usecases">
         1. Display a list of bugs - Done
@@ -65,6 +70,7 @@
                 this.id = data.id || new Date().valueOf().toString();
                 this.title = data.title || '';
                 this.isClosed = data.isClosed || false;
+                this.createdAt = data.createdAt || new Date();
             }
             Bug.prototype.toggleStatus = function(){
                 this.isClosed = !this.isClosed;
@@ -72,12 +78,12 @@
             return Bug;
         });
 
-        bugTrackerApp.service("bugStorage", function BugStorage(Bug){
+        bugTrackerApp.service("bugStorage", function BugStorage(Bug, $window){
 
-                var storage = window.localStorage;
+                var storage = $window.localStorage;
 
                 this.save = function(bug){
-                    storage.setItem(bug.id, window.JSON.stringify(bug));
+                    storage.setItem(bug.id, $window.JSON.stringify(bug));
                 };
                 this.remove = function(id){
                     storage.removeItem(id);
@@ -87,7 +93,7 @@
                     for(var i=0; i< storage.length;i++){
                         var id = storage.key(i);
                         var bugAsString = storage.getItem(id);
-                        var bug = new Bug(JSON.parse(bugAsString));
+                        var bug = new Bug($window.JSON.parse(bugAsString));
                         result.push(bug);
                     }
                     return result;
@@ -122,6 +128,12 @@
                 }
             };
         });
+        bugTrackerApp.value("$moment", moment);
+        bugTrackerApp.filter("toMoment", function($moment){
+            return function(dt){
+                return $moment(dt).fromNow();
+            }
+        });
     </script>
 </head>
 <body ng-app="bugTrackerApp">
@@ -154,9 +166,10 @@
         <ol>
             <li
                 ng-repeat="bug in bugs.list | filter:searchBug | orderBy:'title'"
-                ng-click="bugs.toggleStatus(bug)"
-                ng-class="{closed : bug.isClosed}"
-            >{{bug}}</li>
+            ><span ng-click="bugs.toggleStatus(bug)"
+                ng-class="{closed : bug.isClosed}">{{bug.title}}</span>
+                - <span class="dateTime">{{bug.createdAt | toMoment}}</span>
+                </li>
         </ol>
 
     </div>
