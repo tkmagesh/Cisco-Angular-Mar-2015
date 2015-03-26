@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        div{
+            border : 2px solid;
+            padding : 10px;
+            margin: 10px;
+        }
+        .parent{
+            border-color: blue;
+            background-color: lightblue;
+        }
+        .first{
+            border-color : red;
+            background-color: lightpink;
+        }
+        .second{
+            border-color : green;
+            background-color: palegreen;
+        }
+    </style>
+    <script src="angular.js"></script>
+    <script>
+        angular
+            .module("myApp",[])
+            .controller("parentController", function($scope){
+
+            })
+            .controller("childController", function($scope){
+             $scope.data = {
+                    name : ""
+                };
+            })
+
+    </script>
+</head>
+<body ng-app="myApp">
+    <div ng-controller="parentController" class="parent">
+       <input type="text" ng-model="data.name"><span>{{data.name}}</span>
+
+        <div ng-controller="childController" class="child first">
+            <input type="text" ng-model="data.name"><span>{{data.name}}</span>
+        </div>
+         <div ng-controller="childController" class="child second">
+            <input type="text" ng-model="data.name"><span>{{data.name}}</span>
+        </div>
+    </div>
+</body>
+</html>
