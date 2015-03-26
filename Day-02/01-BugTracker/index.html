@@ -34,7 +34,7 @@
         3. Toggle the bugs status (open/closed) - Done
         4. Remove closed bugs - Done
         5. Display status - Done
-        6. Search the bugs
+        6. Search the bugs - Done
         7. Sort
         8. Persist the bugs in local storage
         9. Persist the bugs in the server
@@ -99,7 +99,10 @@
            </div>
            <div>
                <span>Search : </span>
-               <input type="text">
+               <select ng-model="attrName">
+                   <option ng-repeat="(key,value) in bugs.list[0]" value="{{key}}">{{key}}</option>
+               </select>
+               <input type="text" ng-model="searchBug[attrName]">
            </div>
        </div>
         <div class="bugEntry">
@@ -110,7 +113,7 @@
         </div>
         <ol>
             <li
-                ng-repeat="bug in bugs.list"
+                ng-repeat="bug in bugs.list | filter:searchBug"
                 ng-click="bugs.toggleStatus(bug)"
                 ng-class="{closed : bug.isClosed}"
             >{{bug}}</li>
