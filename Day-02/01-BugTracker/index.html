@@ -35,10 +35,26 @@
         4. Remove closed bugs - Done
         5. Display status - Done
         6. Search the bugs - Done
-        7. Sort
+        7. Sort - Done
         8. Persist the bugs in local storage
         9. Persist the bugs in the server
         10. Add data validation
+
+    LocalStorage
+    =============
+    window.localStorage
+        key/value store (both key and value should be strings)
+
+        - setItem(key,value)
+        - getItem(key) //=> value
+        - removeItem(key)
+        - key(index) //=> key
+        - length
+        - clear()
+
+        value = window.JSON.stringify(bug)
+        id = new Date().valueOf().toString()
+
     </script>
     <script>
         var bugTrackerApp = angular.module("bugTrackerApp",[]);
@@ -60,9 +76,7 @@
 
             $scope.bugs = {
                 list : [
-                    new Bug({ title : "Unable to login", isClosed : false}),
-                    new Bug({ title : "Cricbuzz.com not loading", isClosed : false}),
-                    new Bug({ title : "Refresh rate is too slow", isClosed : false})
+
                 ],
                 addBug : function(){
                     var newBug = new Bug({
@@ -113,7 +127,7 @@
         </div>
         <ol>
             <li
-                ng-repeat="bug in bugs.list | filter:searchBug"
+                ng-repeat="bug in bugs.list | filter:searchBug | orderBy:'title'"
                 ng-click="bugs.toggleStatus(bug)"
                 ng-class="{closed : bug.isClosed}"
             >{{bug}}</li>
