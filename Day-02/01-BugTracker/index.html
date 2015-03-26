@@ -3,141 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Bug Tracker</title>
-    <style>
-        .closed {
-            color : red;
-            text-decoration: line-through;
-            font-style: italic;
-        }
-        .dateTime{
-            font-size: small;
-            font-style: italic;
-        }
-        h1{
-            border-top : 2px solid blue;
-            border-bottom : 2px solid blue;
-            background-color: lightblue;
-            padding: 10px;
-        }
-        .bugEntry {
-            margin-top: 10px;
-            border : 1px solid gray;
-            background-color: lightgray;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        li{
-            cursor: pointer;
-        }
-    </style>
-    <script src="angular.js"></script>
-    <script src="moment.js"></script>
+    <link rel="stylesheet" href="styles/style.css">
 
-    <script type="text/usecases">
-        1. Display a list of bugs - Done
-        2. Add a new bug - Done
-        3. Toggle the bugs status (open/closed) - Done
-        4. Remove closed bugs - Done
-        5. Display status - Done
-        6. Search the bugs - Done
-        7. Sort - Done
-        8. Persist the bugs in local storage
-        9. Persist the bugs in the server
-        10. Add data validation
-
-    LocalStorage
-    =============
-    window.localStorage
-        key/value store (both key and value should be strings)
-
-        - setItem(key,value)
-        - getItem(key) //=> value
-        - removeItem(key)
-        - key(index) //=> key
-        - length
-        - clear()
-
-        value = window.JSON.stringify(bug)
-        id = new Date().valueOf().toString()
-
-    </script>
-    <script>
-        var bugTrackerApp = angular.module("bugTrackerApp",[]);
-
-        bugTrackerApp.factory("Bug", function(){
-            function Bug(data){
-                data = data || {};
-                this.id = data.id || new Date().valueOf().toString();
-                this.title = data.title || '';
-                this.isClosed = data.isClosed || false;
-                this.createdAt = data.createdAt || new Date();
-            }
-            Bug.prototype.toggleStatus = function(){
-                this.isClosed = !this.isClosed;
-            }
-            return Bug;
-        });
-
-        bugTrackerApp.service("bugStorage", function BugStorage(Bug, $window){
-
-                var storage = $window.localStorage;
-
-                this.save = function(bug){
-                    storage.setItem(bug.id, $window.JSON.stringify(bug));
-                };
-                this.remove = function(id){
-                    storage.removeItem(id);
-                };
-                this.getAll = function(){
-                    var result = [];
-                    for(var i=0; i< storage.length;i++){
-                        var id = storage.key(i);
-                        var bugAsString = storage.getItem(id);
-                        var bug = new Bug($window.JSON.parse(bugAsString));
-                        result.push(bug);
-                    }
-                    return result;
-                }
-            }
-            );
+    <script src="js/vendor/angular.js"></script>
+    <script src="js/vendor/moment.js"></script>
 
 
-        bugTrackerApp.controller("bugsController", function($scope, Bug, bugStorage){
-            /*var bugStorage = new BugStorage();*/
+    <script src="js/utils/utils.js"></script>
 
-            $scope.bugs = {
-                list : bugStorage.getAll(),
-                addBug : function(){
-                    var newBug = new Bug({
-                        title : $scope.newBug
-                    });
-                    bugStorage.save(newBug);
-                    this.list.push(newBug);
-                    $scope.newBug = "";
-                },
-                toggleStatus : function(bug){
-                    bug.toggleStatus();
-                    bugStorage.save(bug);
-                },
-                removeClosedBugs : function(){
-                    for(var i=this.list.length-1; i>=0; i--)
-                        if (this.list[i].isClosed){
-                            bugStorage.remove(this.list[i].id);
-                            this.list.splice(i,1);
-                        }
-                }
-            };
-        });
+    <script src="js/app/bugTrackerApp.js"></script>
+    <script src="js/app/controllers/bugsController.js"></script>
+    <script src="js/app/factories/Bug.js"></script>
+    <script src="js/app/filters/toMoment.js"></script>
+    <script src="js/app/services/bugStorage.js"></script>
+    <script src="js/app/values/bTmoment.js"></script>
+    <script src="js/app/values/defaultTrimTextLength.js"></script>
 
-        bugTrackerApp.value("$moment", moment);
 
-        bugTrackerApp.filter("toMoment", function($moment){
-            return function(dt){
-                return $moment(dt).fromNow();
-            }
-        });
-    </script>
 </head>
+
 <body ng-app="bugTrackerApp">
     <h1>Bug Tracker</h1>
     <div class="content" ng-controller="bugsController">
@@ -158,6 +42,10 @@
                </select>
                <input type="text" ng-model="searchBug[attrName]">
            </div>
+           <div>
+               Bug Title Length :
+               <input type="range" ng-model="bugTitleLength" min="10" max="50">
+           </div>
        </div>
         <div class="bugEntry">
             <label for="">Bug:</label>
@@ -169,7 +57,7 @@
             <li
                 ng-repeat="bug in bugs.list | filter:searchBug | orderBy:'title'"
             ><span ng-click="bugs.toggleStatus(bug)"
-                ng-class="{closed : bug.isClosed}">{{bug.title}}</span>
+                ng-class="{closed : bug.isClosed}">{{bug.title | trimText:bugTitleLength}}</span>
                 - <span class="dateTime">{{bug.createdAt | toMoment}}</span>
                 </li>
         </ol>
