@@ -62,6 +62,7 @@
         bugTrackerApp.factory("Bug", function(){
             function Bug(data){
                 data = data || {};
+                this.id = data.id || new Date().valueOf().toString();
                 this.title = data.title || '';
                 this.isClosed = data.isClosed || false;
             }
@@ -71,28 +72,53 @@
             return Bug;
         });
 
+        bugTrackerApp.service("bugStorage", function BugStorage(Bug){
 
-        bugTrackerApp.controller("bugsController", function($scope, Bug){
+                var storage = window.localStorage;
+
+                this.save = function(bug){
+                    storage.setItem(bug.id, window.JSON.stringify(bug));
+                };
+                this.remove = function(id){
+                    storage.removeItem(id);
+                };
+                this.getAll = function(){
+                    var result = [];
+                    for(var i=0; i< storage.length;i++){
+                        var id = storage.key(i);
+                        var bugAsString = storage.getItem(id);
+                        var bug = new Bug(JSON.parse(bugAsString));
+                        result.push(bug);
+                    }
+                    return result;
+                }
+            }
+            );
+
+
+        bugTrackerApp.controller("bugsController", function($scope, Bug, bugStorage){
+            /*var bugStorage = new BugStorage();*/
 
             $scope.bugs = {
-                list : [
-
-                ],
+                list : bugStorage.getAll(),
                 addBug : function(){
                     var newBug = new Bug({
-                        title : $scope.newBug,
-                        isClosed : false
+                        title : $scope.newBug
                     });
+                    bugStorage.save(newBug);
                     this.list.push(newBug);
                     $scope.newBug = "";
                 },
                 toggleStatus : function(bug){
                     bug.toggleStatus();
+                    bugStorage.save(bug);
                 },
                 removeClosedBugs : function(){
                     for(var i=this.list.length-1; i>=0; i--)
-                        if (this.list[i].isClosed)
+                        if (this.list[i].isClosed){
+                            bugStorage.remove(this.list[i].id);
                             this.list.splice(i,1);
+                        }
                 }
             };
         });
