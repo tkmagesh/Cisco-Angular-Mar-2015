@@ -128,7 +128,9 @@
                 }
             };
         });
+
         bugTrackerApp.value("$moment", moment);
+
         bugTrackerApp.filter("toMoment", function($moment){
             return function(dt){
                 return $moment(dt).fromNow();
