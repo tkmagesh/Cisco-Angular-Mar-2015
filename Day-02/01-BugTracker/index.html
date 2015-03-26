@@ -3,20 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <title>Bug Tracker</title>
+    <style>
+    .closed {
+        color : red;
+        text-decoration: line-through;
+        font-style: italic;
+    }
+        h1{
+            border-top : 2px solid blue;
+            border-bottom : 2px solid blue;
+            background-color: lightblue;
+            padding: 10px;
+        }
+        .bugEntry {
+            margin-top: 10px;
+            border : 1px solid gray;
+            background-color: lightgray;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        li{
+            cursor: pointer;
+        }
+    </style>
     <script src="angular.js"></script>
 
     <script type="text/usecases">
         1. Display a list of bugs
         2. Add a new bug
         3. Toggle the bugs status (open/closed)
-        4. Search the bugs
-        5. Sort
-        6. Persist the bugs in local storage
-        7. Persist the bugs in the server
-        8. Add data validation
+        4. Remove closed bugs
+        5. Display status
+        6. Search the bugs
+        7. Sort
+        8. Persist the bugs in local storage
+        9. Persist the bugs in the server
+        10. Add data validation
     </script>
 </head>
 <body>
+    <h1>Bug Tracker</h1>
+    <div class="content">
+       <div>
+            <div>
+               <span>Total # :</span><span>10</span>
+            </div>
+           <div>
+               <span>Closed # :</span><span class="closed">5</span>
+           </div>
+
+       </div>
+        <div class="bugEntry">
+            <label for="">Bug:</label>
+            <input type="text" name="" id="">
+            <input type="button" value="Add Bug">
+            <input type="button" value="Remove Closed">
+        </div>
+        <ol>
+            <li>Bug - 1</li>
+            <li class="closed">Bug - 2</li>
+            <li>Bug - 3</li>
+        </ol>
+    </div>
 
 </body>
 </html>
