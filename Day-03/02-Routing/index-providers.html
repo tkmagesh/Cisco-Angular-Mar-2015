@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular Routing</title>
+    <script src="angular.js"></script>
+    <script src="angular-route.js"></script>
+    <script>
+    angular
+        .module("routingApp",["ngRoute"])
+        .constant("city", "Bangalore")
+        .provider("myApi", function(city){
+            var _city = city;
+            return {
+                setCity : function(value){
+                    _city = value;
+                },
+                $get : function(){
+                    return {
+                        name : "magesh",
+                        workCity : function(){
+                            return "City of " + _city;
+                        }
+                    };
+                }
+            };
+        })
+        .config(function(myApiProvider){
+            myApiProvider.setCity("Hyderabad");
+            console.log("configuration");
+            console.log(myApiProvider);
+        })
+        .run(function(myApi){
+            console.log("run");
+            console.log(typeof myApi);
+            console.log(myApi.workCity());
+        });
+
+
+    </script>
+</head>
+<body ng-app="routingApp">
+
+</body>
+</html>

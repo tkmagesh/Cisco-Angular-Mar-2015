@@ -1,10 +1,7 @@
 angular.module("bugTrackerApp")
-    .controller("bugsController", function($scope, Bug, bugStorage, $filter){
-            /*var bugStorage = new BugStorage();*/
-
-
+    .controller("bugsController", function($scope, Bug, bugStorage, bugService){
             $scope.bugs = {
-                list : bugStorage.getAll(),
+                list : [],
                 addBug : function(){
                     var newBug = new Bug({
                         title : $scope.newBug
@@ -25,4 +22,13 @@ angular.module("bugTrackerApp")
                         }
                 }
             };
+
+            /*bugService.getAll().then(function(response){
+                $scope.bugs.list = response.data.map(function(bugData){
+                    return new Bug(bugData);
+                });
+            });*/
+            bugService.getAll().then(function(bugs){
+                $scope.bugs.list = bugs;
+            });
         });

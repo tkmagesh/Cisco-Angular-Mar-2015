@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular Routing</title>
+    <script src="angular.js"></script>
+    <script src="angular-route.js"></script>
+    <script>
+    angular
+        .module("routingApp",["ngRoute"])
+
+        .config(function($routeProvider){
+
+            $routeProvider
+                .when("/products/:productId",{
+                    templateUrl : "templates/productsDetailTemplate.html",
+                    controller : "productsDetailController"
+                })
+                .when("/products", {
+                    //template : "<h1> Products </h1>"
+                    templateUrl : "templates/productsListTemplate.html"
+                })
+                .when("/customers", {
+                    //template : "<h1> Customers </h1>"
+                    templateUrl : "templates/customersListTemplate.html"
+                })
+                .otherwise({
+                    redirectTo : "/products"
+                })
+        })
+    .controller("productsDetailController", function($scope, $routeParams){
+        $scope.productId = $routeParams.productId;
+    });
+
+
+
+    </script>
+</head>
+<body ng-app="routingApp">
+   <ol>
+       <li><a href="#/products">Products</a></li>
+       <li><a href="#/customers">Customers</a></li>
+   </ol>
+    <ng-view></ng-view>
+</body>
+</html>
