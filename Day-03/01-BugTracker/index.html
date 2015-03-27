@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bug Tracker</title>
+    <link rel="stylesheet" href="styles/style.css">
+
+    <script src="js/vendor/angular.js"></script>
+    <script src="js/vendor/moment.js"></script>
+
+
+    <script src="js/utils/utils.js"></script>
+
+    <script src="js/app/bugTrackerApp.js"></script>
+    <script src="js/app/controllers/bugsController.js"></script>
+    <script src="js/app/factories/Bug.js"></script>
+    <script src="js/app/filters/toMoment.js"></script>
+    <script src="js/app/services/bugStorage.js"></script>
+    <script src="js/app/values/bTmoment.js"></script>
+    <script src="js/app/values/defaultTrimTextLength.js"></script>
+
+
+</head>
+
+<body ng-app="bugTrackerApp">
+    <h1>Bug Tracker</h1>
+    <div class="content" ng-controller="bugsController">
+       <div>
+            <div>
+               <span>Total # :</span><span>{{bugs.list.length}}</span>
+            </div>
+           <div>
+               <span>Closed # :</span>
+               <span class="closed">
+                   {{(bugs.list | filter:{isClosed : true}).length}}
+               </span>
+           </div>
+           <div>
+               <span>Search : </span>
+               <select ng-model="attrName">
+                   <option ng-repeat="(key,value) in bugs.list[0]" value="{{key}}">{{key}}</option>
+               </select>
+               <input type="text" ng-model="searchBug[attrName]">
+           </div>
+           <div>
+               Bug Title Length :
+               <input type="range" ng-model="bugTitleLength" min="10" max="50">
+           </div>
+       </div>
+        <div class="bugEntry">
+            <label for="">Bug:</label>
+            <input type="text" ng-model="newBug">
+            <input type="button" value="Add Bug" ng-click="bugs.addBug()">
+            <input type="button" value="Remove Closed" ng-click="bugs.removeClosedBugs()">
+        </div>
+        <ol>
+            <li
+                ng-repeat="bug in bugs.list | filter:searchBug | orderBy:'title'"
+            ><span ng-click="bugs.toggleStatus(bug)"
+                ng-class="{closed : bug.isClosed}">{{bug.title | trimText:bugTitleLength}}</span>
+                - <span class="dateTime">{{bug.createdAt | toMoment}}</span>
+                </li>
+        </ol>
+
+    </div>
+
+</body>
+</html>
